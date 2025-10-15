@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import fileUpload from "express-fileupload";
 import path from "path";
@@ -60,6 +63,14 @@ app.get("/browse", (req, res) => {
 // serve about.html at /about
 app.get("/about", (req, res) => {
   res.sendFile(path.join(__dirname, "about.html"));
+});
+
+// Test API key endpoint
+app.get("/test-key", (req, res) => {
+  if (!process.env.OPENAI_API_KEY) {
+    return res.status(500).send("API key missing");
+  }
+  res.send("API key loaded successfully");
 });
 
 // API: get current framework info
