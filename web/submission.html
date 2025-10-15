@@ -1,0 +1,305 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Multiview CTC Grader — Guided Capture</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:800px;margin:2rem auto;padding:0 1rem;background:#f6f6f6}
+    .container{max-width:800px;margin:0 auto;padding:2rem}
+    h1{font-size:1.8rem;margin-bottom:0.25rem;text-align:center}
+    h2{font-size:1.3rem;margin-bottom:0.5rem}
+    .subtitle{color:#555;font-size:0.9rem;text-align:center;margin-bottom:1.5rem}
+    .card{background:#fff;border:1px solid #ddd;border-radius:12px;padding:1.5rem;margin:1.5rem 0;box-shadow:0 2px 6px rgba(0,0,0,0.05)}
+    button,.dark-btn{padding:.7rem 1rem;border-radius:10px;border:none;background:#111827;color:#fff;cursor:pointer;font-weight:500;font-size:0.9rem;text-decoration:none;display:inline-block}
+    button[disabled]{opacity:.5;cursor:not-allowed}
+    button:hover:not([disabled]),.dark-btn:hover{background:#333}
+    #shots img{width:200px;height:auto;border-radius:8px;margin-right:10px;border:1px solid #e5e7eb}
+    .muted,.subtext{color:#555;font-size:0.9rem}
+    .tip,.tiny-note{font-size:0.75rem;color:#666}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center}
+    .pill{display:inline-block;padding:.25rem .5rem;border:1px solid #e5e7eb;border-radius:999px;background:#f9fafb;font-size:12px}
+    .archive-controls{display:flex;gap:0.5rem;margin-top:0.5rem}
+    input[type=text]{flex:1;border-radius:8px;border:1px solid #ccc;padding:0.5rem 0.75rem;font-size:0.9rem}
+    footer{text-align:center;font-size:0.75rem;color:#777;margin-top:2rem}
+    .grading-results{margin-top:1rem;padding:1rem;border:1px solid #10b981;border-radius:12px;background:#f0fdf4}
+    .grade-display{margin:1rem 0;font-size:1.2rem}
+    .grade{color:#059669;font-size:1.4rem}
+    .subgrades{margin:1rem 0}
+    .subgrade-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0.5rem;margin-top:0.5rem}
+    .subgrade-item{display:flex;justify-content:space-between;padding:0.5rem;background:#fff;border-radius:6px;border:1px solid #e5e7eb}
+    .subgrade-item .label{font-weight:500}
+    .subgrade-item .score{font-weight:bold;color:#059669}
+    .notes{margin:1rem 0;padding:1rem;background:#fff;border-radius:6px;border:1px solid #e5e7eb}
+    .actions{display:flex;gap:10px;margin-top:1rem}
+    .download-btn,.new-specimen-btn{padding:0.7rem 1rem;border-radius:10px;text-decoration:none;border:none;cursor:pointer;font-size:14px}
+    .download-btn{background:#3b82f6;color:#fff}
+    .new-specimen-btn{background:#6b7280;color:#fff}
+    .error{color:#dc2626;background:#fef2f2;padding:1rem;border-radius:6px;border:1px solid #fecaca}
+    .error-results{margin-top:1rem;padding:1rem;border:1px solid #dc2626;border-radius:12px;background:#fef2f2}
+    .error-message{margin:1rem 0;font-size:1.1rem;color:#dc2626}
+    .error-message .pill{background:#fecaca;color:#dc2626;border-color:#fca5a5}
+    .full-error-details{margin-top:1rem;padding:1rem;border:1px solid #dc2626;border-radius:12px;background:#fef2f2;max-height:600px;overflow-y:auto}
+    .error-section{margin:1rem 0;padding:0.5rem;background:#fff;border-radius:6px;border:1px solid #fecaca}
+    .error-section h5{margin:0 0 0.5rem 0;color:#dc2626;font-size:14px;font-weight:bold}
+    .error-section pre{background:#f9f9f9;padding:0.5rem;border-radius:4px;font-size:12px;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word;max-height:200px;overflow-y:auto}
+  </style>
+</head>
+<body>
+  <main class="container">
+    <!-- HEADER -->
+    <header>
+      <h1>Multiview CTC Grader — Guided Capture</h1>
+      <p class="subtitle">Current Framework: <strong id="framework-name">Loading...</strong></p>
+    </header>
+
+    <!-- GUIDED CAPTURE CARD -->
+    <section class="card">
+    <p id="instruction">Click <strong>Start</strong> to begin a new specimen.</p>
+    <div class="row">
+      <button id="start">Start</button>
+      <button id="takeFront" disabled>Take FRONT Photo</button>
+      <button id="takeSide" disabled>Take SIDE Photo</button>
+      <button id="submit" disabled>Submit for Grading</button>
+        <a href="/browse" style="margin-left:auto;text-decoration:none" class="pill">📂 Browse Archive</a>
+    </div>
+      <p class="tip">Tip: FRONT = straight-on; SIDE = show the most curvature.</p>
+    
+      <div class="row" id="shots" style="margin-top:1rem"></div>
+      <div id="status" class="muted"></div>
+    </section>
+
+    <!-- ARCHIVE ACCESS SECTION -->
+    <section class="card">
+      <h2>📁 Archive Access</h2>
+      <p class="subtext">Search or browse existing Multiview grading reports.</p>
+      <div class="archive-controls">
+        <input type="text" id="archive-search" placeholder="Search by ID, Grade, or Framework..." />
+        <a href="/browse" class="dark-btn">Browse Archive</a>
+      </div>
+      <p class="tiny-note">View previous grading reports and recovered legacy documents.</p>
+    </section>
+
+    <!-- ABOUT MULTIVIEW SECTION -->
+    <section class="card">
+      <h2>ℹ️ About Multiview Technology</h2>
+      <p class="subtext">
+        Multiview Technology applies scientific precision and conceptual absurdity to the grading of 
+        Cinnamon Toast Crunch specimens. Every square is measured, analyzed, and certified under the 
+        Multiview Grading Standards framework. The paperwork is real — the subject is breakfast.
+      </p>
+      <a href="/about" class="dark-btn">Read More</a>
+    </section>
+
+    <footer>
+      <p>Multiview Technology © 2025 — Certified under <span id="footer-framework">v1.6 (Strict++)</span>.</p>
+    </footer>
+  </main>
+
+  <script>
+    let specimenId=null, haveFront=false, haveSide=false;
+
+    // Load framework info on page load
+    async function loadFrameworkInfo() {
+      try {
+        const response = await fetch('/api/framework');
+        const data = await response.json();
+        document.getElementById('framework-name').textContent = data.name;
+        document.getElementById('footer-framework').textContent = data.version + ' (' + data.name.match(/\(([^)]+)\)/)?.[1] + ')';
+      } catch (error) {
+        console.error('Failed to load framework info:', error);
+        document.getElementById('framework-name').textContent = 'Multiview Grading Standards v1.6 (Strict++)';
+        document.getElementById('footer-framework').textContent = 'v1.6 (Strict++)';
+      }
+    }
+
+    // Load framework on page load
+    loadFrameworkInfo();
+
+    async function api(path, opts){
+      const res = await fetch(path, opts);
+      if(!res.ok) throw new Error(await res.text());
+      return res.json();
+    }
+
+    document.getElementById('start').onclick = async ()=>{
+      const j = await api('/api/nextSpecimen');
+      specimenId = j.specimenId;
+      document.getElementById('instruction').textContent = `Specimen: ${specimenId} — Step 1: Take FRONT photo.`;
+      document.getElementById('takeFront').disabled = false;
+      document.getElementById('status').textContent = '';
+      document.getElementById('shots').innerHTML = '';
+      haveFront=false; haveSide=false;
+    };
+
+    function openCameraAndUpload(label){
+      const input = document.createElement('input');
+      input.type='file'; input.accept='image/*'; input.capture='environment';
+      input.onchange = async (e)=>{
+        const file = e.target.files[0];
+        if(!file) return;
+        const fd = new FormData();
+        fd.append('photo', file);
+        fd.append('label', label);
+        fd.append('specimenId', specimenId);
+        try{
+          const response = await fetch('/api/savePhoto', { method:'POST', body: fd });
+          const result = await response.json();
+          
+          if (result.ok) {
+            const img = document.createElement('img');
+            img.src = result.url || URL.createObjectURL(file);
+            img.alt = label;
+            document.getElementById('shots').appendChild(img);
+            
+            // Show conversion feedback if applicable
+            if (result.converted) {
+              document.getElementById('status').innerHTML = `✅ Photo uploaded successfully (converted from HEIC to JPEG)`;
+            } else {
+              document.getElementById('status').innerHTML = `✅ Photo uploaded successfully`;
+            }
+            
+            if(label==='front'){
+              haveFront = true;
+              document.getElementById('instruction').textContent = `Specimen: ${specimenId} — Step 2: Take SIDE photo (show curvature).`;
+              document.getElementById('takeSide').disabled = false;
+              document.getElementById('takeFront').disabled = true;
+            } else {
+              haveSide = true;
+              document.getElementById('instruction').textContent = `Specimen: ${specimenId} — Ready to Submit.`;
+              document.getElementById('submit').disabled = false;
+              document.getElementById('takeSide').disabled = true;
+            }
+          } else {
+            document.getElementById('status').innerHTML = `❌ Upload failed: ${result.error}`;
+          }
+        }catch(err){ 
+          document.getElementById('status').innerHTML = `❌ Upload failed: ${err.message}`;
+        }
+      };
+      input.click();
+    }
+
+    document.getElementById('takeFront').onclick = ()=>openCameraAndUpload('front');
+    document.getElementById('takeSide').onclick  = ()=>openCameraAndUpload('side');
+
+    document.getElementById('submit').onclick = async ()=>{
+      if(!haveFront || !haveSide) return;
+      document.getElementById('status').textContent = 'Submitting for AI grading…';
+      try{
+        const j = await api('/api/grade', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ specimenId })});
+        
+        // Check if there's an error response
+        if (j.error) {
+          const errorHTML = `
+            <div class="error-results">
+              <h3>❌ Grading Error</h3>
+              <div class="error-message">
+                <span class="pill">${j.specimenId}</span> - ${j.message}
+              </div>
+              
+              <div class="notes">
+                <h4>Error Details</h4>
+                <p>${j.message}</p>
+                <p><strong>Solution:</strong> Please upload images in supported formats (JPG, PNG, GIF, WEBP, or HEIC).</p>
+              </div>
+              
+              <div class="actions">
+                <button onclick="startNewSpecimen()" class="new-specimen-btn">🆕 Try New Specimen</button>
+              </div>
+            </div>
+          `;
+          document.getElementById('status').innerHTML = errorHTML;
+          return;
+        }
+        
+        // Display comprehensive results with error handling
+        const subgrades = j.subgrades || {};
+        const resultsHTML = `
+          <div class="grading-results">
+            <h3>🎯 Grading Results</h3>
+            <div class="grade-display">
+              <span class="pill">${j.specimenId}</span> → <strong class="grade">${j.grade || 'N/A'}</strong>
+            </div>
+            
+            <div class="subgrades">
+              <h4>Subgrade Breakdown</h4>
+              <div class="subgrade-grid">
+                <div class="subgrade-item"><span class="label">Geometry:</span> <span class="score">${subgrades.geometry || 'N/A'}</span></div>
+                <div class="subgrade-item"><span class="label">Corners:</span> <span class="score">${subgrades.corners || 'N/A'}</span></div>
+                <div class="subgrade-item"><span class="label">Coating:</span> <span class="score">${subgrades.coating || 'N/A'}</span></div>
+                <div class="subgrade-item"><span class="label">Surface:</span> <span class="score">${subgrades.surface || 'N/A'}</span></div>
+                <div class="subgrade-item"><span class="label">Alignment:</span> <span class="score">${subgrades.alignment || 'N/A'}</span></div>
+              </div>
+            </div>
+            
+            <div class="notes">
+              <h4>Analysis Notes</h4>
+              <p>${j.notes || 'No analysis notes available.'}</p>
+            </div>
+            
+            <div class="actions">
+              <a href="/api/reports/${j.specimenId}_CTC_Grading_Report.pdf" target="_blank" class="download-btn">📄 Download Report</a>
+              <button onclick="startNewSpecimen()" class="new-specimen-btn">🆕 New Specimen</button>
+            </div>
+          </div>
+        `;
+        
+        document.getElementById('status').innerHTML = resultsHTML;
+        
+      }catch(err){ 
+        let errorHTML = `<div class="error">❌ Grading failed: ${err.message}</div>`;
+        
+        // Try to parse the full error response
+        try {
+          const errorResponse = await err.response?.json();
+          if (errorResponse?.fullError) {
+            errorHTML += `
+              <div class="full-error-details">
+                <h4>🔍 Full Error Details</h4>
+                <div class="error-section">
+                  <h5>Error Message:</h5>
+                  <pre>${errorResponse.fullError.message}</pre>
+                </div>
+                <div class="error-section">
+                  <h5>Stack Trace:</h5>
+                  <pre>${errorResponse.fullError.stack}</pre>
+                </div>
+                <div class="error-section">
+                  <h5>Context:</h5>
+                  <pre>${JSON.stringify(errorResponse.fullError.context, null, 2)}</pre>
+                </div>
+                <div class="error-section">
+                  <h5>System Info:</h5>
+                  <pre>${JSON.stringify(errorResponse.fullError.system, null, 2)}</pre>
+                </div>
+                <div class="error-section">
+                  <h5>Timestamp:</h5>
+                  <pre>${errorResponse.fullError.timestamp}</pre>
+                </div>
+              </div>
+            `;
+          }
+        } catch (parseError) {
+          errorHTML += `<div class="error">❌ Could not parse error details: ${parseError.message}</div>`;
+        }
+        
+        document.getElementById('status').innerHTML = errorHTML;
+      }
+    };
+    
+    // Function to start a new specimen
+    window.startNewSpecimen = async ()=>{
+      const j = await api('/api/nextSpecimen');
+      specimenId = j.specimenId;
+      document.getElementById('instruction').textContent = `Specimen: ${specimenId} — Step 1: Take FRONT photo.`;
+      document.getElementById('takeFront').disabled = false;
+      document.getElementById('takeSide').disabled = true;
+      document.getElementById('submit').disabled = true;
+      document.getElementById('status').innerHTML = '';
+      document.getElementById('shots').innerHTML = '';
+      haveFront=false; haveSide=false;
+    };
+  </script>
+</body>
+</html>

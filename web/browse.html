@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Multiview Archive</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:960px;margin:2rem auto;padding:0 1rem}
+    .row{display:flex;gap:10px;align-items:center}
+    .muted{color:#6b7280}
+    input[type=text]{border:1px solid #e5e7eb;border-radius:8px;padding:.5rem 0.75rem;width:100%}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:.6rem;border-bottom:1px solid #e5e7eb;text-align:left}
+    th{font-weight:600}
+    tr:hover{background:#f9fafb}
+    a.btn{display:inline-block;padding:.4rem .7rem;border:1px solid #d1d5db;border-radius:8px;text-decoration:none}
+  </style>
+  <script>
+    async function load(q=''){
+      const res = await fetch('/api/specimens'+(q?`?q=${encodeURIComponent(q)}`:''));
+      const j = await res.json();
+      const tbody = document.querySelector('tbody');
+      tbody.innerHTML = '';
+      (j.specimens||[]).forEach(s=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${s.specimenId}</td>
+          <td>${s.grade||''}</td>
+          <td>${s.frameworkVersion||''}</td>
+          <td>${s.dateGraded? new Date(s.dateGraded).toLocaleString(): ''}</td>
+          <td><a class="btn" href="${s.pdfPath}" target="_blank">View PDF</a></td>
+          <td>${s.urlFront? `<a href="${s.urlFront}" target="_blank"><img src="${s.urlFront}" alt="front" style="height:50px;border:1px solid #e5e7eb;border-radius:4px;cursor:pointer" title="Click to enlarge"/></a>`:''}</td>
+          <td>${s.urlSide? `<a href="${s.urlSide}" target="_blank"><img src="${s.urlSide}" alt="side" style="height:50px;border:1px solid #e5e7eb;border-radius:4px;cursor:pointer" title="Click to enlarge"/></a>`:''}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+      document.getElementById('count').textContent = j.count||0;
+    }
+    window.addEventListener('DOMContentLoaded',()=>{
+      const q = document.getElementById('q');
+      q.addEventListener('input',()=>load(q.value));
+      load('');
+    });
+  </script>
+  </head>
+<body>
+  <div class="row" style="justify-content:space-between">
+    <h1>Multiview Archive</h1>
+    <a href="/" class="btn">⬅ Back</a>
+  </div>
+  
+  <div style="margin:1rem 0;display:flex;gap:10px">
+    <button id="tabSpecimens" class="btn" style="background:#111827;color:#fff">Specimens</button>
+    <button id="tabDocuments" class="btn">Documents</button>
+  </div>
+  
+  <div id="specimensView">
+    <p class="muted">Search by specimen ID or notes. Showing <span id="count">0</span> records.</p>
+    <input id="q" type="text" placeholder="Search..."/>
+    <div style="margin-top:1rem;overflow-x:auto">
+      <table>
+      <thead>
+        <tr>
+          <th>Specimen ID</th>
+          <th>Grade</th>
+          <th>Framework</th>
+          <th>Date</th>
+          <th>Report</th>
+          <th>Front</th>
+          <th>Side</th>
+        </tr>
+      </thead>
+      <tbody>      </tbody>
+    </table>
+  </div>
+  </div>
+  
+  <div id="documentsView" style="display:none">
+    <p class="muted">Browse all archived documents by category.</p>
+    <div id="docsList" style="margin-top:1rem"></div>
+  </div>
+  
+  <script>
+    let currentTab = 'specimens';
+    document.getElementById('tabSpecimens').onclick = () => {
+      currentTab = 'specimens';
+      document.getElementById('specimensView').style.display = 'block';
+      document.getElementById('documentsView').style.display = 'none';
+      document.getElementById('tabSpecimens').style.background = '#111827';
+      document.getElementById('tabSpecimens').style.color = '#fff';
+      document.getElementById('tabDocuments').style.background = '';
+      document.getElementById('tabDocuments').style.color = '';
+    };
+    document.getElementById('tabDocuments').onclick = async () => {
+      currentTab = 'documents';
+      document.getElementById('specimensView').style.display = 'none';
+      document.getElementById('documentsView').style.display = 'block';
+      document.getElementById('tabSpecimens').style.background = '';
+      document.getElementById('tabSpecimens').style.color = '';
+      document.getElementById('tabDocuments').style.background = '#111827';
+      document.getElementById('tabDocuments').style.color = '#fff';
+      await loadDocuments();
+    };
+    
+    async function loadDocuments() {
+      const res = await fetch('/api/documents');
+      const j = await res.json();
+      const container = document.getElementById('docsList');
+      container.innerHTML = '';
+      for (const [cat, files] of Object.entries(j.documents || {})) {
+        const section = document.createElement('div');
+        section.style.marginBottom = '2rem';
+        const h3 = document.createElement('h3');
+        h3.textContent = cat;
+        h3.style.marginBottom = '0.5rem';
+        section.appendChild(h3);
+        const ul = document.createElement('ul');
+        ul.style.listStyle = 'none';
+        ul.style.padding = '0';
+        files.forEach(f => {
+          const li = document.createElement('li');
+          li.style.padding = '0.5rem';
+          li.style.borderBottom = '1px solid #e5e7eb';
+          li.innerHTML = `<a href="${f.url}" target="_blank" style="text-decoration:none;color:#111827">${f.name} <span style="color:#6b7280;font-size:12px">[${f.type}]</span></a>`;
+          ul.appendChild(li);
+        });
+        section.appendChild(ul);
+        container.appendChild(section);
+      }
+    }
+  </script>
+</body>
+</html>
+
+

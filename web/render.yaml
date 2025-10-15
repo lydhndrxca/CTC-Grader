@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: ctc-grading
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: NODE_VERSION
+        value: 18.18.0
+    disk:
+      name: ctc-data
+      mountPath: /opt/render/project/src/Documents
+      sizeGB: 1
+

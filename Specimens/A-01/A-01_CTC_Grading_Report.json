@@ -1,0 +1,27 @@
+{
+  "specimenId": "A-01",
+  "frameworkVersion": "v1.6",
+  "verificationType": "VO",
+  "grade": "PSA 8.0 (Good)",
+  "subgrades": {
+    "geometry": 7.5,
+    "corners": 8,
+    "coating": 8.5,
+    "surface": 8,
+    "alignment": 8
+  },
+  "notes": "The specimen exhibits a curvature of approximately 8.0%, which is above the ideal range of 2-5%. This results in a penalty to the geometry score. The corners show moderate wear but maintain a reasonable shape. The coating is fairly consistent, though not perfect, with some areas appearing slightly uneven. The surface texture is generally good, with minor defects. Alignment is acceptable, though not perfectly symmetrical. Overall, the piece is in good condition but has noticeable curvature and minor imperfections.",
+  "images": {
+    "front": "D:\\Projects\\CTC_Grading\\Specimens\\A-01\\A-01_front.jpg",
+    "side": "D:\\Projects\\CTC_Grading\\Specimens\\A-01\\A-01_side.jpg"
+  },
+  "paths": {
+    "reportPdfMain": "D:\\Projects\\CTC_Grading\\Documents\\Reports\\A-01_CTC_Grading_Report.pdf",
+    "reportMarkdownMain": "D:\\Projects\\CTC_Grading\\Documents\\Reports\\A-01_CTC_Grading_Report.md",
+    "reportPdfSpecimen": "D:\\Projects\\CTC_Grading\\Specimens\\A-01\\A-01_CTC_Grading_Report.pdf",
+    "reportMarkdownSpecimen": "D:\\Projects\\CTC_Grading\\Specimens\\A-01\\A-01_CTC_Grading_Report.md"
+  },
+  "generatedAt": "2025-10-15T01:40:16.525Z",
+  "reportFormat": "v1.2",
+  "systemHash": "cee03fb2ffbdd65b3a966f09dffd17ee2dd6bcfb736a8d419413f1c1ba54dce6"
+}

@@ -1,0 +1,8 @@
+rules:
+  - pattern: "**/*"
+    instruction: |
+      Only make minimal functional edits.
+      No commentary, logging, or docstrings.
+      Keep diffs compact.
+
+

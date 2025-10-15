@@ -1,0 +1,7 @@
+node_modules/
+.DS_Store
+web/node_modules/
+web/.env
+Documents/Reports/*.pdf
+Specimens/*/*.jpg
+uploads/

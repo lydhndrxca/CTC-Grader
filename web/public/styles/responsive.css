@@ -1,0 +1,443 @@
+/**
+ * Responsive Styles for Cross-Device Compatibility
+ * Optimized for iPhone, Android, and Desktop
+ */
+
+/* Base responsive behavior */
+* {
+  box-sizing: border-box;
+}
+
+/* Mobile-first defaults */
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f9fafb;
+  color: #111827;
+}
+
+/* Mobile mode styles */
+body.mobile-mode {
+  font-size: 1rem;
+  padding: 12px;
+  max-width: 100%;
+}
+
+body.mobile-mode .card {
+  margin: 0.75rem 0;
+  padding: 1rem;
+}
+
+body.mobile-mode button {
+  width: 100%;
+  font-size: 1.1em;
+  padding: 14px 16px;
+  margin: 8px 0;
+}
+
+/* Desktop mode styles */
+body.desktop-mode {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+body.desktop-mode .card {
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+}
+
+body.desktop-mode button {
+  min-width: 200px;
+  padding: 12px 24px;
+  margin: 8px 4px;
+  display: inline-block;
+  width: auto;
+}
+
+/* iOS-specific adjustments */
+body.ios-device {
+  -webkit-overflow-scrolling: touch;
+}
+
+body.ios-device input[type="file"] {
+  /* iOS file input styling */
+  -webkit-appearance: none;
+}
+
+/* Android-specific adjustments */
+body.android-device {
+  /* Android-specific styles */
+}
+
+/* Card component */
+.card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Button styles */
+button {
+  border: none;
+  border-radius: 10px;
+  background: #111827;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+button:hover {
+  background: #1f2937;
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+}
+
+button.secondary {
+  background: white;
+  color: #111827;
+  border: 1px solid #d1d5db;
+}
+
+button.secondary:hover {
+  background: #f9fafb;
+}
+
+/* File input styling */
+input[type="file"] {
+  width: 100%;
+  font-size: 1em;
+  padding: 12px;
+  margin: 10px 0;
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  background: #f9fafb;
+  cursor: pointer;
+}
+
+input[type="file"]:hover {
+  border-color: #9ca3af;
+  background: white;
+}
+
+/* Text input styling */
+input[type="text"] {
+  width: 100%;
+  font-size: 1em;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-family: inherit;
+}
+
+/* Photo preview grid */
+.photo-previews {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+/* Mobile portrait: stack vertically */
+body.mobile-mode .photo-previews {
+  grid-template-columns: 1fr;
+}
+
+/* Mobile landscape OR desktop: side-by-side */
+body.desktop-mode .photo-previews,
+body[data-orientation="landscape"] .photo-previews {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.photo-preview-container {
+  position: relative;
+  display: none; /* Hidden until photo captured */
+}
+
+.photo-preview-container.has-image {
+  display: block;
+}
+
+.photo-preview {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: block;
+}
+
+.photo-label {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75em;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Lighting tip banner */
+#lighting-tip {
+  background: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  padding: 12px 16px;
+  margin: 16px 0;
+  border-radius: 6px;
+  font-size: 0.9em;
+  display: none; /* Shown only on mobile */
+}
+
+/* Leaderboard styles */
+.leaderboard {
+  margin-top: 24px;
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin: 8px 0;
+}
+
+.leaderboard-item .rank {
+  font-size: 1.5em;
+  font-weight: 700;
+  color: #6b7280;
+  min-width: 40px;
+  text-align: center;
+}
+
+.leaderboard-item .rank.gold {
+  color: #f59e0b;
+}
+
+.leaderboard-item .rank.silver {
+  color: #9ca3af;
+}
+
+.leaderboard-item .rank.bronze {
+  color: #d97706;
+}
+
+.leaderboard-item img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #e5e7eb;
+}
+
+.leaderboard-item .info {
+  flex: 1;
+}
+
+.leaderboard-item .tag {
+  font-weight: 700;
+  font-size: 1.1em;
+  color: #111827;
+}
+
+.leaderboard-item .grade {
+  display: block;
+  color: #059669;
+  font-weight: 600;
+}
+
+.leaderboard-item .meta {
+  font-size: 0.85em;
+  color: #6b7280;
+}
+
+/* Status messages */
+.status {
+  padding: 12px 16px;
+  margin: 16px 0;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.status.info {
+  background: #dbeafe;
+  color: #1e40af;
+  border-left: 4px solid #3b82f6;
+}
+
+.status.success {
+  background: #d1fae5;
+  color: #065f46;
+  border-left: 4px solid #059669;
+}
+
+.status.error {
+  background: #fee2e2;
+  color: #991b1b;
+  border-left: 4px solid #dc2626;
+}
+
+.status.warning {
+  background: #fef3c7;
+  color: #92400e;
+  border-left: 4px solid #f59e0b;
+}
+
+/* Badge component */
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.85em;
+  font-weight: 600;
+  margin: 0 4px;
+}
+
+.badge.vo {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.badge.mv {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+/* Responsive typography */
+@media (max-width: 640px) {
+  h1 {
+    font-size: 1.75rem;
+  }
+  
+  h2 {
+    font-size: 1.25rem;
+  }
+  
+  h3 {
+    font-size: 1.1rem;
+  }
+}
+
+/* Landscape mode optimizations */
+@media (orientation: landscape) and (max-width: 900px) {
+  .photo-previews {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  button {
+    width: auto;
+    min-width: 150px;
+  }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #111827;
+    color: #f9fafb;
+  }
+  
+  .card {
+    background: #1f2937;
+    border-color: #374151;
+  }
+  
+  button {
+    background: #3b82f6;
+  }
+  
+  button.secondary {
+    background: #1f2937;
+    color: #f9fafb;
+    border-color: #4b5563;
+  }
+  
+  input {
+    background: #1f2937;
+    border-color: #4b5563;
+    color: #f9fafb;
+  }
+}
+
+/* Touch target optimization for mobile */
+@media (pointer: coarse) {
+  button {
+    min-height: 48px;
+    font-size: 1.1em;
+  }
+  
+  input {
+    min-height: 48px;
+    font-size: 1em;
+  }
+  
+  .leaderboard-item {
+    min-height: 72px;
+  }
+}
+
+/* Loading spinner */
+.spinner {
+  border: 3px solid #f3f4f6;
+  border-top: 3px solid #3b82f6;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Utility classes */
+.hidden {
+  display: none !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+
+/* Accessibility */
+button:focus,
+input:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Print styles (for certificates) */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+

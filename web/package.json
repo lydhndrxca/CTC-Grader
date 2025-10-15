@@ -1,0 +1,26 @@
+{
+  "name": "ctc-grading-web",
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "@google-cloud/vision": "^5.3.3",
+    "@tensorflow/tfjs-node": "^4.22.0",
+    "dayjs": "^1.11.13",
+    "dotenv": "^16.4.7",
+    "express": "^4.19.2",
+    "express-fileupload": "^1.4.2",
+    "fs-extra": "^11.3.2",
+    "heic-convert": "^1.2.4",
+    "md-to-pdf": "^5.2.4",
+    "nsfwjs": "^4.2.1",
+    "openai": "^4.104.0",
+    "pdfkit": "^0.14.0",
+    "sharp": "^0.34.4",
+    "sqlite3": "^5.1.7",
+    "uuid": "^11.0.5"
+  }
+}
